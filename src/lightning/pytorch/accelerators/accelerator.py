@@ -13,7 +13,7 @@
 # limitations under the License.
 from abc import ABC
 from typing import Any
-
+from contextlib import nullcontext
 import lightning.pytorch as pl
 from lightning.fabric.accelerators.accelerator import Accelerator as _Accelerator
 from lightning.fabric.utilities.types import _DEVICE
@@ -45,3 +45,9 @@ class Accelerator(_Accelerator, ABC):
 
         """
         raise NotImplementedError
+
+    def get_distribute_name(self) -> str:
+        return "gloo"
+
+    def get_stream_context(self, device_id: Any) -> Any:
+        return nullcontext()

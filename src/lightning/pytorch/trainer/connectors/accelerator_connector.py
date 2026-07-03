@@ -35,6 +35,7 @@ from lightning.pytorch.accelerators import AcceleratorRegistry
 from lightning.pytorch.accelerators.accelerator import Accelerator
 from lightning.pytorch.accelerators.cuda import CUDAAccelerator
 from lightning.pytorch.accelerators.mps import MPSAccelerator
+from lightning.pytorch.accelerators.xla import NPUAccelerator
 from lightning.pytorch.accelerators.xla import XLAAccelerator
 from lightning.pytorch.plugins import (
     _PLUGIN_INPUT,
@@ -301,7 +302,7 @@ class _AcceleratorConnector:
                         )
                     self._accelerator_flag = "cpu"
                 if self._strategy_flag.parallel_devices[0].type == "cuda":
-                    if self._accelerator_flag and self._accelerator_flag not in ("auto", "cuda", "gpu"):
+                    if self._accelerator_flag and self._accelerator_flag not in ("auto", "cuda", "gpu", "npu"):
                         raise MisconfigurationException(
                             f"GPU parallel_devices set through {self._strategy_flag.__class__.__name__} class,"
                             f" but accelerator set to {self._accelerator_flag}, please choose one device type"
@@ -338,6 +339,8 @@ class _AcceleratorConnector:
             return "mps"
         if CUDAAccelerator.is_available():
             return "cuda"
+        if NPUAccelerator.is_available():
+            return "npu"
         raise MisconfigurationException("No supported gpu backend found!")
 
     def _set_parallel_devices_and_init_accelerator(self) -> None:
@@ -410,7 +413,7 @@ class _AcceleratorConnector:
             return "ddp"
         if len(self._parallel_devices) <= 1:
             if isinstance(self._accelerator_flag, (CUDAAccelerator, MPSAccelerator)) or (
-                isinstance(self._accelerator_flag, str) and self._accelerator_flag in ("cuda", "gpu", "mps")
+                isinstance(self._accelerator_flag, str) and self._accelerator_flag in ("cuda", "gpu", "mps", "npu")
             ):
                 device = _determine_root_gpu_device(self._parallel_devices)
             else:
