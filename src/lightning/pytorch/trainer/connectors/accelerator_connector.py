@@ -35,7 +35,7 @@ from lightning.pytorch.accelerators import AcceleratorRegistry
 from lightning.pytorch.accelerators.accelerator import Accelerator
 from lightning.pytorch.accelerators.cuda import CUDAAccelerator
 from lightning.pytorch.accelerators.mps import MPSAccelerator
-from lightning.pytorch.accelerators.xla import NPUAccelerator
+from lightning.pytorch.accelerators.npu import NPUAccelerator
 from lightning.pytorch.accelerators.xla import XLAAccelerator
 from lightning.pytorch.plugins import (
     _PLUGIN_INPUT,

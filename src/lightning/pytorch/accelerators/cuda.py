@@ -106,7 +106,7 @@ class CUDAAccelerator(Accelerator):
         return num_cuda_devices() > 0
 
     @override
-    def get_distribute_name(self) -> str;
+    def get_distribute_name(self) -> str:
         return "nccl"
 
     @override
